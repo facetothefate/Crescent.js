@@ -1,5 +1,4 @@
 !function(){
 	"use strict";
-	var HL={version:"0.1.0"};
+	var C={version:"0.1.0"};
 
-}();
