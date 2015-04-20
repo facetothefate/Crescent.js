@@ -10,6 +10,7 @@ var Router = function(){
 	var runningMidware=null;
 	var status=null;
 	var URLParser=function(url){
+		if(!url||url=="") return;
 		var urlGroup=url.split('/');
 		for(var i=0;i<map.length;i++){
 			if(url.length!=urlGroup.length)
@@ -37,15 +38,17 @@ var Router = function(){
 			//call the controller or other middle ware
 			if(j==map[i].url.length)
 			{
-				if(typeof map[i].midware=="function"){
-			
-							//support the customize function as a controller.
-							map[i].midware(request);
-				}else if(typeof map[i].midware=="object"){
-					if( instanceof map[i].midware=="Controller"){
-
+				if(typeof map[i].midware==="function"){
+	
+					//support the customize function as a controller.
+					map[i].midware(request);
+				}else if(typeof map[i].midware==="object"){
+					if( instanceof map[i].midware==="Controller"){
+						map[i].setRequest(request);
+						map[i].midware._run();
 					}
 					else{
+						
 						//support the customize object as a controller.
 						if(map[i].midware.run)
 							map[i].midware.run(request);
@@ -67,6 +70,9 @@ var Router = function(){
 		};
 		var URLHashMoniter = function(newURL){
 			//do the url parser here;
+			//no /#! that's the one don't need to route
+			if(newURL.indexOf('/#!')===-1)
+				return;
 			//append the /#! to the begianning, erase for the URLParser
 			URLParser(newURL.substring(3));
 		};
@@ -114,7 +120,9 @@ var Router = function(){
 			params[name]=callback;
 		},
 		go:function(url){
+			if(status=="hash"){
 
+			}
 		}
 	};
 };

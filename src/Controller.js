@@ -1,11 +1,17 @@
-var Controller=function(){
+
+var Controller=function(option){
+    var option=option;
     var before=null;
     var after=null;
     var request=null;
     var params={};
     return{
         _run:function(){
+            if(before){
+                if(typeof before ==="function")
+                    before();
 
+            }
         },
         run:function(){},
         runBefore:function(_controller){
