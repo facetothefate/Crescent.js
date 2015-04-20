@@ -1,8 +1,12 @@
 var Controller=function(){
     var before=null;
     var after=null;
+    var request=null;
     var params={};
     return{
+        _run:function(){
+
+        },
         run:function(){},
         runBefore:function(_controller){
             before=_controller;
@@ -15,6 +19,10 @@ var Controller=function(){
         setParam:function(name,value){
             params[name]=value;
             return this;
+        },
+        setRequest:function(request){
+            request=request;
+            params=request.params;
         },
         //user Event
         onCreate:function(){},
