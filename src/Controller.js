@@ -8,9 +8,19 @@ var Controller=function(option){
     return{
         _run:function(){
             if(before){
-                if(typeof before ==="function")
+                if(typeof before === "function")
                     before();
+                if(instanceof before === "Controller")
+                    // Dangous if we run _run function here
+                    before.run();
 
+            }
+            run();
+            if(after){
+                if(typeof after === "function")
+                    after();
+                if(instanceof after=== "Controller")
+                    after.run();
             }
         },
         run:function(){},

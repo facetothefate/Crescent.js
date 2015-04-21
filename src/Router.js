@@ -48,7 +48,7 @@ var Router = function(){
 						map[i].midware._run();
 					}
 					else{
-						
+
 						//support the customize object as a controller.
 						if(map[i].midware.run)
 							map[i].midware.run(request);
@@ -70,11 +70,10 @@ var Router = function(){
 		};
 		var URLHashMoniter = function(newURL){
 			//do the url parser here;
-			//no /#! that's the one don't need to route
-			if(newURL.indexOf('/#!')===-1)
+			//the hash not start with ! means this one don't need to route
+			if(newURL.indexOf('!')!=0)
 				return;
-			//append the /#! to the begianning, erase for the URLParser
-			URLParser(newURL.substring(3));
+			URLParser(newURL.substring(1));
 		};
 		var hashChangeHandler = function(newURL){
 			for(var i = 0;i < onhashChangeHandlers.length;i++){
@@ -96,7 +95,7 @@ var Router = function(){
 			var hashChangeSimulater = function(){
 				var URLHash = getHash();
 				if(perviousURL != URLHash){
-					 hashChangeHandler();
+					 hashChangeHandler(URLHash);
 				}
 				perviousURLHash = URLHash;
 			};
@@ -121,6 +120,7 @@ var Router = function(){
 		},
 		go:function(url){
 			if(status=="hash"){
+				url='/#!'+url;
 
 			}
 		}
