@@ -64,8 +64,11 @@ var Router = function(){
 	var URLParser=function(url){
 		if(!url||url==="") return;
 		var urlGroup=url.split('/');
+		var request=new Request();
+			request.url=url;
+			request.source=runningMidware;
 		for(var i=0;i<map.length;i++){
-			if(url.length!=urlGroup.length)
+			if(map[i].url.length!=urlGroup.length)
 				continue;
 			for( j=0;j<map[i].url.length;j++){
 				if(map[i].url[j]!=urlGroup[j]){
@@ -86,9 +89,6 @@ var Router = function(){
 
 			//call the controller or other middle ware
 			if(j==map[i].url.length){
-				var request=new Request();
-				request.url=url;
-				request.source=runningMidware;
 				call(map[i].midware,request);
 			}
 		}

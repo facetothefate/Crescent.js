@@ -6,20 +6,29 @@
 <body>
 	<ul>
 		<li>
-			<button onclick="C.router.go('/1');"> Controller 1</button>
+			<button onclick="C.router.go('/c1');">Go to Controller 1</button>
 		</li>
 		<li>
-			<button onclick="C.router.go('/2');"> Controller 2</button>
+			<button onclick="C.router.go('/c1/hello wold');">Go to Controller 1 with parameter</button>
+		</li>
+		<li>
+			<button onclick="C.router.go('/c2');">Go to Controller 2</button>
 		</li>
 	</ul>
 	<script type="text/javascript" src="../release/Crescent-0.1.0.js"></script>
 	<script type="text/javascript">
-		C.router.route('/1',function Controller1 (req) {
-			alert(1);
-		});
-		C.router.route('/2',function Controller2 (req) {
-			alert(2);
-		});
+		function Controller1 (req) {
+			if(!req.params.param1)
+				alert("I am Controller1!");
+			else
+				alert("I recevied a parameter:"+req.params.param1);
+		}
+		function Controller2 (req) {
+			alert("I am Controller2!");
+		}
+		C.router.route('/c1',Controller1);
+		C.router.route('/c1/:param1',Controller1);
+		C.router.route('/c2',Controller2);
 	</script>
 </body>
 </html>
