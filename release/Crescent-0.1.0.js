@@ -1,4 +1,4 @@
-/*! Crescent - v0.1.0 - Released: 2015-04-22 */
+/*! Crescent - v0.1.0 - Released: 2015-04-23 */
 !function(){
 	"use strict";
 	var C={version:"0.1.0"};
@@ -70,7 +70,56 @@ var Request=function(){
 	this.source=null;
 };
 //Hash change moniter or History state push
+var URLMoniter=function(){
+	this.init=function(changeCallback){};
+	this.getURL=function(){};
+	this.setURL=function(){};
+};
+var URLMoniterHash= new URLMoniter();
+	URLMoniterHash.getURL=function(){
+		return window.location.href.split("#")[1] || "";
+	};
+	URLMoniterHash.setURL=function(url){
+		window.location.hash="#!"+url;
+	};
+	URLMoniterHash.init=function(changeCallback){
+		var that=this;
+		var hashChangeHandler = function(newURL){
+			/*for(var i = 0;i < onhashChangeHandlers.length;i++){
+					//run all the users hash change handlers
+					onhashChangeHandlers[i](newURL);
+			}*/
+			//the hash not start with ! means this one don't need to route
+			if(newURL.indexOf('!')!==0)
+				return;
+			changeCallback(newURL.substring(1));
+		};
+		if ("onhashchange" in window){
+			//C.addEvent(window,);
+			window.onhashchange = function(){
+				hashChangeHandler(that.getURL());
+			};
+		}else{
+			//don't support hashchange event, we simulate it by use settimeout
+			var perviousURLHash = "";
+			var time = 200;
+			var hashChangeSimulater = function(){
+				var URLHash = that.getURL();
+				if(perviousURL != URLHash){
+					 hashChangeHandler(URLHash);
+				}
+				perviousURLHash = URLHash;
+			};
+			//run the simulater again and again;
+			setTimeout(function(){
+                hashChangeSimulater();        
+                setTimeout(arguments.callee,time);
+            },time);
+		}
+	};
+var URLMoniterHistory= new URLMoniter();
 var Router = function(){
+	var URLMoniter=null;
 	var defaultWay="hash";
 	var map = [];
 	var params={};
@@ -105,93 +154,46 @@ var Router = function(){
 				var request=new Request();
 				request.url=url;
 				request.source=runningMidware;
-				if(typeof map[i].midware==="function"){
-					//support the customize function as a controller.
-					map[i].midware(request);
-					runningMidware=map[i].midware;
-				}else if(typeof map[i].midware==="object"){
-					if( map[i].midware instanceof Controller){
-						map[i].setRequest(request);
-						map[i].midware._run();
-						runningMidware=map[i].midware;
-					}
-					else{
-
-						//support the customize object as a controller.
-						if(map[i].midware.run){
-							map[i].midware.run(request);
-							runningMidware=map[i].midware;
-						}
-					}
-				}
-				else{
-					throw new Error("No middle ware handle such url:"+url);
-				}
-				
+				call(map[i].midware,request);
 			}
 		}
 
 	};
+	var call=function(midware,request){
+		if(typeof midware==="function"){
+			//support the customize function as a controller.
+			midware(request);
+			runningMidware=midware;
+		}else if(typeof midware==="object"){
+			if( midware instanceof Controller){
+				midware.setRequest(request);
+				midware._run();
+				runningMidware=midware;
+			}
+			else{
 
+				//support the customize object as a controller.
+				if(midware.run){
+					midware.run(request);
+					runningMidware=midware;
+				}
+			}
+		}
+		else{
+			throw new Error("No middle ware handle such url:"+url);
+		}
+	};
 	if(!history.pushState||defaultWay==="hash"){
 		//don't support push state use url hash
 		status="hash";
-		var getHash = function(){
-			return window.location.href.split("#")[1] || "";
-		};
-		var setHash=function(hash){
-			window.location.hash=hash;
-
-		};
-		
-		//moniter the hash change
-		var hashChangeHandler = function(newURL){
-			/*for(var i = 0;i < onhashChangeHandlers.length;i++){
-					//run all the users hash change handlers
-					onhashChangeHandlers[i](newURL);
-			}*/
-			//the hash not start with ! means this one don't need to route
-			if(newURL.indexOf('!')!==0)
-				return;
-			URLParser(newURL.substring(1));
-		};
-
-		//direct input the url, run the right controller
-		var hash=getHash();
-
-		if(hash){
-			 hashChangeHandler(hash);
-		}
-
-
-		if ("onhashchange" in window){
-			//C.addEvent(window,);
-			window.onhashchange = function(){
-				hashChangeHandler(getHash());
-			};
-		}else{
-			//don't support hashchange event, we simulate it by use settimeout
-			var perviousURLHash = "";
-			var time = 200;
-			var hashChangeSimulater = function(){
-				var URLHash = getHash();
-				if(perviousURL != URLHash){
-					 hashChangeHandler(URLHash);
-				}
-				perviousURLHash = URLHash;
-			};
-			//run the simulater again and again;
-			setTimeout(function(){
-                hashChangeSimulater();        
-                setTimeout(arguments.callee,time);
-            },time);
-		}
+		URLMoniter=URLMoniterHash;
 
 	}else{
 		//support history.pushState later
 		status="history";
+		URLMoniter=URLMoniterHistory;
 	}
-	
+	URLMoniter.init(URLParser);
 
 	return {
 		route:function(url,midware){
@@ -202,11 +204,7 @@ var Router = function(){
 			params[name]=callback;
 		},
 		go:function(url){
-			if(status=="hash"){
-				url='#!'+url;
-				setHash(url);
-			}
-			
+			URLMoniter.setURL(url);
 		},
 		redirect:function(url){
 			// the request will be reload
