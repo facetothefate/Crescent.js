@@ -1,7 +1,6 @@
 {
-  "name": "HL",
+  "name": "Crescent",
   "version": "0.1.0",
-  "private": true,
   "author" :"Zhifei Fang",
   "devDependencies": {
     "grunt": "^0.4.5",

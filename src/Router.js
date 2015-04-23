@@ -17,6 +17,7 @@ var Router = function(){
 				continue;
 			var request=new request();
 				request.url=url;
+				request.source=runningMidware;
 
 			for(var j=0;j<map[i].url.length;j++){
 				if(map[i].url[j]!=urlGroup[j]){
@@ -57,6 +58,7 @@ var Router = function(){
 				else{
 					throw new Error("No middle ware handle such url:"+url);
 				}
+				runningMidware=map[i].midware;
 			}
 		}
 
@@ -121,8 +123,8 @@ var Router = function(){
 		go:function(url){
 			if(status=="hash"){
 				url='/#!'+url;
-
 			}
+			
 		}
 	};
 };

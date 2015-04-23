@@ -2,9 +2,10 @@ module.exports = function(grunt) {
 
   var sourceFiles=[
     'Header.js',
-    'URLParser.js',
-    'Nav.js',
-    'HL.js',
+    'Controller.js',
+    'Model.js',
+    'View.js',
+    'C.js',
     'Footer.js',
   ];
 
