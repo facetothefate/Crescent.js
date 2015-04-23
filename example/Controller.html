@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 	<title>Crescent.js Controller basic example</title>
@@ -6,11 +6,13 @@
 <body>
 	<ul>
 		<li>
-			<a href="javascript:void(0)"> Controller 1</a>
-			<a href="javascript:void(0)"> Controller 2</a>
+			<button onclick="C.router.go('/1');"> Controller 1</button>
+		</li>
+		<li>
+			<button onclick="C.router.go('/2');"> Controller 2</button>
 		</li>
 	</ul>
-	<script type="text/javascript" src="../relase/Crescent-0.1.0.js"></script>
+	<script type="text/javascript" src="../release/Crescent-0.1.0.js"></script>
 	<script type="text/javascript">
 		C.router.route('/1',function Controller1 (req) {
 			alert(1);

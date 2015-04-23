@@ -1,12 +1,20 @@
 module.exports = function(grunt) {
 
+  var contactFiles=[
+    './src/Header.js',
+    './src/Controller.js',
+    './src/Model.js',
+    './src/View.js',
+    './src/Router.js',
+    './src/C.js',
+    './src/Footer.js',
+  ];
   var sourceFiles=[
-    'Header.js',
-    'Controller.js',
-    'Model.js',
-    'View.js',
-    'C.js',
-    'Footer.js',
+    './src/Controller.js',
+    './src/Model.js',
+    './src/View.js',
+    './src/Router.js',
+    './src/C.js',
   ];
 
   // Project configuration.
@@ -18,8 +26,8 @@ module.exports = function(grunt) {
 
       },
       dist:{
-        src:sourceFiles,
-        dest:'/release/<%= pkg.name %>-<%= pkg.version %>.js',
+        src:contactFiles,
+        dest:'./release/<%= pkg.name %>-<%= pkg.version %>.js',
       }
     },
     jshint:{
@@ -28,11 +36,11 @@ module.exports = function(grunt) {
     },
     uglify:{
       options:{
-        banner:'/release/*! <%= pkg.name %> - v<%= pkg.version %> - Realesed: <%= grunt.template.today("yyyy-mm-dd") %> */\n',
+        banner:'./release/*! <%= pkg.name %> - v<%= pkg.version %> - Realesed: <%= grunt.template.today("yyyy-mm-dd") %> */\n',
       },
       build:{
-        src:'<%= pkg.name %>-<%= pkg.version %>.js',
-        dest:'<%= pkg.name %>-<%= pkg.version %>.min.js'
+        src:'./release/<%= pkg.name %>-<%= pkg.version %>.js',
+        dest:'./release/<%= pkg.name %>-<%= pkg.version %>.min.js'
       },
     },
     watch:{

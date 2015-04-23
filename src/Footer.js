@@ -1,3 +1,3 @@
 
-	this.C=C;
+	window.C=C;
 }();

@@ -1,6 +1,6 @@
 
-var Controller=function(option){
-    var option=option;
+var Controller=function(_option){
+    var option=_option;
     var before=null;
     var after=null;
     var request=null;
@@ -10,7 +10,7 @@ var Controller=function(option){
             if(before){
                 if(typeof before === "function")
                     before();
-                if(instanceof before === "Controller")
+                else if(before instanceof Controller)
                     // Dangous if we run _run function here
                     before.run();
 
@@ -19,7 +19,7 @@ var Controller=function(option){
             if(after){
                 if(typeof after === "function")
                     after();
-                if(instanceof after=== "Controller")
+                else if(after instanceof Controller)
                     after.run();
             }
         },
@@ -44,6 +44,6 @@ var Controller=function(option){
         onCreate:function(){},
         onResume:function(){},
         onDestory:function(){}
-    }
+    };
 };
 C.controller=Controller;

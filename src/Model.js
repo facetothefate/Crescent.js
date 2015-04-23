@@ -6,5 +6,5 @@ var Model=function(_option){
 		save:function(){},
 		update:function(){},
 		del:function(){},
-	}
-}
+	};
+};

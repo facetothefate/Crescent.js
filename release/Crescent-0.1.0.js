@@ -1,3 +1,69 @@
+/*! Crescent - v0.1.0 - Released: 2015-04-22 */
+!function(){
+	"use strict";
+	var C={version:"0.1.0"};
+
+
+
+var Controller=function(_option){
+    var option=_option;
+    var before=null;
+    var after=null;
+    var request=null;
+    var params={};
+    return{
+        _run:function(){
+            if(before){
+                if(typeof before === "function")
+                    before();
+                else if(before instanceof Controller)
+                    // Dangous if we run _run function here
+                    before.run();
+
+            }
+            run();
+            if(after){
+                if(typeof after === "function")
+                    after();
+                else if(after instanceof Controller)
+                    after.run();
+            }
+        },
+        run:function(){},
+        runBefore:function(_controller){
+            before=_controller;
+            return this;
+        },
+        runAfter:function(_controller){
+            after=_controller;
+            return this;
+        },
+        setParam:function(name,value){
+            params[name]=value;
+            return this;
+        },
+        setRequest:function(request){
+            request=request;
+            params=request.params;
+        },
+        //user Event
+        onCreate:function(){},
+        onResume:function(){},
+        onDestory:function(){}
+    };
+};
+C.controller=Controller;
+var Model=function(_option){
+	var option=_option;
+	var datasource={};
+	return {
+		create:function(){},
+		save:function(){},
+		update:function(){},
+		del:function(){},
+	};
+};
+
 var Request=function(){
 	this.params={};
 	this.url=null;
@@ -149,3 +215,28 @@ var Router = function(){
 	};
 };
 C.router=new Router();
+
+C.addEvent = function ( obj, type, fn ) {
+	if ( obj.attachEvent ) {
+		obj['e'+type+fn] = fn;
+		obj[type+fn] = function(){obj['e'+type+fn]( window.event );};
+		obj.attachEvent( 'on'+type, obj[type+fn] );
+	} else
+		obj.addEventListener( type, fn, false );
+};
+C.removeEvent = function( obj, type, fn ) {
+	if ( obj.detachEvent ) {
+		obj.detachEvent( 'on'+type, obj[type+fn] );
+		obj[type+fn] = null;
+	} else
+		obj.removeEventListener( type, fn, false );
+};
+//handle the user's own hashchange function;
+var onhashChangeFuntions=[];
+C.bindHashChange=function(callback){
+	this.onhashChangeFuntions.push(callback);
+};
+
+
+	window.C=C;
+}();
